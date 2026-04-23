@@ -1,11 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Full Stack Project</title>
-  </head>
-  <body>
-    <!-- You code goes here-->
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>APOD Viewer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🌌 Astronomy Picture of the Day</h1>
+  </header>
+
+  <section class="controls">
+    <input type="date" id="date-picker">
+    <button id="load-btn">Load Image</button>
+  </section>
+
+  <main>
+    <div id="data-container">
+      <h2 id="title">Title Placeholder</h2>
+      <img id="apod-image" src="" alt="APOD Image" />
+      <p id="description">Description will appear here.</p>
+      <button id="save-btn">❤️ Save to Favorites</button>
+    </div>
+  </main>
+
+  <section id="favorites">
+    <h2>Favorites</h2>
+    <div id="favorites-list"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
 </html>

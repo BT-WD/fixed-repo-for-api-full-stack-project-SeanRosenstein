@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0f19;
+  color: white;
+  text-align: center;
+  margin: 0;
+}
+
+header {
+  padding: 20px;
+  background: #111827;
+}
+
+.controls {
+  margin: 20px;
+}
+
+#data-container {
+  padding: 20px;
+}
+
+img {
+  max-width: 80%;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background: #2563eb;
+  color: white;
+}
