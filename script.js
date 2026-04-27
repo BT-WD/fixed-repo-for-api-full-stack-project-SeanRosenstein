@@ -14,7 +14,26 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentData = null;
 
   // -------------------------
-  // LOADING UI CONTROL
+  // FULLSCREEN TOGGLE
+  // -------------------------
+  function toggleFullScreen(el) {
+    if (!document.fullscreenElement) {
+      el.requestFullscreen().catch(err => {
+        console.log("Fullscreen error:", err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  imgEl.addEventListener("click", () => {
+    if (imgEl.style.display !== "none") {
+      toggleFullScreen(imgEl);
+    }
+  });
+
+  // -------------------------
+  // LOADING
   // -------------------------
   function showLoading() {
     loader.style.display = "block";
@@ -41,10 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (date) url += `&date=${date}`;
 
       const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error("NASA API unavailable");
-      }
+      if (!response.ok) throw new Error("API error");
 
       const data = await response.json();
       currentData = data;
@@ -53,31 +69,29 @@ document.addEventListener("DOMContentLoaded", () => {
       descEl.textContent = data.explanation;
 
       if (data.media_type === "image") {
-        imgEl.classList.remove("visible"); // reset
 
-imgEl.onload = () => {
-  imgEl.classList.add("visible");
-};
+        imgEl.classList.remove("visible");
+        imgEl.src = data.url;
+        imgEl.style.display = "block";
 
-imgEl.src = data.url;
-imgEl.style.display = "block";
+        imgEl.onload = () => {
+          imgEl.classList.add("visible");
+        };
 
-// fallback if image is cached
-if (imgEl.complete) {
-  imgEl.classList.add("visible");
-}
+        // cached image fix
+        if (imgEl.complete) {
+          imgEl.classList.add("visible");
+        }
 
       } else {
         imgEl.style.display = "none";
         descEl.textContent = "This is a video APOD.";
       }
 
-    } catch (error) {
-      console.error(error);
-      titleEl.textContent = "API unavailable";
+    } catch (err) {
+      titleEl.textContent = "Error loading APOD";
       descEl.textContent = "Try again later.";
       imgEl.style.display = "none";
-
     } finally {
       hideLoading();
     }
@@ -122,18 +136,14 @@ if (imgEl.complete) {
   });
 
   saveBtn.addEventListener("click", () => {
-    if (!currentData) {
-      alert("No image loaded yet.");
-      return;
-    }
-
+    if (!currentData) return alert("No image loaded");
     saveToFavorites(currentData);
   });
 
   // -------------------------
   // INIT
   // -------------------------
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
   datePicker.value = today;
 
   fetchAPOD(today);

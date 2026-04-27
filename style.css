@@ -22,7 +22,7 @@ header {
   align-items: center;
 }
 
-/* ✨ UPDATED IMAGE STYLING */
+/* 🌟 IMAGE FX */
 #apod-image {
   max-width: 80%;
   border-radius: 10px;
@@ -31,19 +31,18 @@ header {
 
   opacity: 0;
   transition: opacity 0.6s ease, transform 0.3s ease;
+  cursor: zoom-in;
 }
 
-/* fade-in */
 #apod-image.visible {
   opacity: 1;
 }
 
-/* subtle hover zoom */
 #apod-image:hover {
   transform: scale(1.03);
 }
 
-/* 🔄 LOADING SPINNER */
+/* 🔄 LOADER */
 #loader {
   border: 6px solid #333;
   border-top: 6px solid #2563eb;
