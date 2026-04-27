@@ -44,12 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const response = await fetch(url);
 
-      // 🚨 handle bad responses (503 etc)
       if (!response.ok) {
         throw new Error("NASA API unavailable (503 or rate limit)");
       }
 
-      const data = await response.json(); // SAFE now
+      const data = await response.json();
 
       currentData = data;
 
@@ -85,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!favorites.some(item => item.date === data.date)) {
       favorites.push(data);
       localStorage.setItem("favorites", JSON.stringify(favorites));
+      loadFavorites();  // Re-load favorites list after saving
     }
   }
 
@@ -120,15 +120,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     saveToFavorites(currentData);
-    loadFavorites();
   });
 
   // -------------------------
   // INIT
   // -------------------------
-  const today = new Date().toISOString().split('T')[0]; // Format to YYYY-MM-DD
-  datePicker.value = today; // Default date to today
+  const today = new Date().toISOString().split('T')[0]; // Get today's date as YYYY-MM-DD format
+  datePicker.value = today; // Set date picker to today's date
   fetchAPOD(today); // Load today's APOD by default
-  loadFavorites();
+  loadFavorites(); // Load favorites on page load
 
 });
