@@ -53,13 +53,19 @@ document.addEventListener("DOMContentLoaded", () => {
       descEl.textContent = data.explanation;
 
       if (data.media_type === "image") {
-        imgEl.src = data.url;
-        imgEl.style.display = "block";
+        imgEl.classList.remove("visible"); // reset
 
-        // ✨ fade-in trigger
-        imgEl.onload = () => {
-          imgEl.classList.add("visible");
-        };
+imgEl.onload = () => {
+  imgEl.classList.add("visible");
+};
+
+imgEl.src = data.url;
+imgEl.style.display = "block";
+
+// fallback if image is cached
+if (imgEl.complete) {
+  imgEl.classList.add("visible");
+}
 
       } else {
         imgEl.style.display = "none";
