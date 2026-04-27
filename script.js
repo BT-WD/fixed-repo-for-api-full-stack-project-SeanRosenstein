@@ -26,11 +26,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  imgEl.addEventListener("click", () => {
-    if (imgEl.style.display !== "none") {
-      toggleFullScreen(imgEl);
-    }
-  });
+function toggleFullScreen(el) {
+  if (!document.fullscreenElement) {
+    el.requestFullscreen().catch(err => {
+      console.log("Fullscreen error:", err);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// use container instead of image
+const container = document.getElementById("data-container");
+
+container.addEventListener("click", (e) => {
+  if (e.target.tagName === "IMG") {
+    toggleFullScreen(container);
+  }
+});
 
   // -------------------------
   // LOADING
