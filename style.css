@@ -17,6 +17,9 @@ header {
 
 #data-container {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 img {
@@ -24,6 +27,8 @@ img {
   border-radius: 10px;
   margin: 20px 0;
   display: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* 🔄 LOADING SPINNER */
@@ -57,15 +62,13 @@ button:disabled {
   background: gray;
   cursor: not-allowed;
 }
-#data-container {
+#favorites-list {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-#apod-image {
-  display: none;
-  max-width: 80%;
-  border-radius: 10px;
-  margin-top: 20px;
+#favorites-list div {
+  text-align: center;
+  margin: 10px;
 }

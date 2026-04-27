@@ -33,49 +33,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------
   // FETCH APOD (ROBUST)
   // -------------------------
-async function fetchAPOD(date = "") {
-  try {
+  async function fetchAPOD(date = "") {
+    try {
+      showLoading();
 
-    showLoading();
+      let url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`;
+      if (date) url += `&date=${date}`;
 
-    let url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`;
-    if (date) url += `&date=${date}`;
+      console.log("Fetching:", url);
 
-    console.log("Fetching:", url);
+      const response = await fetch(url);
 
-    const response = await fetch(url);
+      // 🚨 handle bad responses (503 etc)
+      if (!response.ok) {
+        throw new Error("NASA API unavailable (503 or rate limit)");
+      }
 
-    // 🚨 handle bad responses (503 etc)
-    if (!response.ok) {
-      throw new Error("NASA API unavailable (503 or rate limit)");
-    }
+      const data = await response.json(); // SAFE now
 
-    const data = await response.json(); // SAFE now
+      currentData = data;
 
-    currentData = data;
+      titleEl.textContent = data.title;
+      descEl.textContent = data.explanation;
 
-    titleEl.textContent = data.title;
-    descEl.textContent = data.explanation;
+      if (data.media_type === "image") {
+        imgEl.src = data.url;
+        imgEl.style.display = "block";
+      } else {
+        imgEl.style.display = "none";
+        descEl.textContent = "This is a video APOD.";
+      }
 
-    if (data.media_type === "image") {
-      imgEl.src = data.url;
-      imgEl.style.display = "block";
-    } else {
+    } catch (error) {
+      console.error("Error fetching APOD:", error);
+
+      titleEl.textContent = "NASA API temporarily unavailable";
+      descEl.textContent = "Try again in a few minutes.";
       imgEl.style.display = "none";
-      descEl.textContent = "This is a video APOD.";
+
+    } finally {
+      hideLoading();
     }
-
-  } catch (error) {
-    console.error("Error fetching APOD:", error);
-
-    titleEl.textContent = "NASA API temporarily unavailable";
-    descEl.textContent = "Try again in a few minutes.";
-    imgEl.style.display = "none";
-
-  } finally {
-    hideLoading();
   }
-}
 
   // -------------------------
   // FAVORITES
@@ -127,7 +126,9 @@ async function fetchAPOD(date = "") {
   // -------------------------
   // INIT
   // -------------------------
-  fetchAPOD();
+  const today = new Date().toISOString().split('T')[0]; // Format to YYYY-MM-DD
+  datePicker.value = today; // Default date to today
+  fetchAPOD(today); // Load today's APOD by default
   loadFavorites();
 
 });
