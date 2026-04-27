@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const loader = document.getElementById("loader");
 
   let currentData = null;
-  let isLoading = false;
 
   // -------------------------
   // LOADING UI CONTROL
@@ -23,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     titleEl.textContent = "Loading...";
     descEl.textContent = "";
     imgEl.style.display = "none";
+    imgEl.classList.remove("visible");
   }
 
   function hideLoading() {
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // -------------------------
-  // FETCH APOD (ROBUST)
+  // FETCH APOD
   // -------------------------
   async function fetchAPOD(date = "") {
     try {
@@ -40,16 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
       let url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`;
       if (date) url += `&date=${date}`;
 
-      console.log("Fetching:", url);
-
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error("NASA API unavailable (503 or rate limit)");
+        throw new Error("NASA API unavailable");
       }
 
       const data = await response.json();
-
       currentData = data;
 
       titleEl.textContent = data.title;
@@ -58,16 +55,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.media_type === "image") {
         imgEl.src = data.url;
         imgEl.style.display = "block";
+
+        // ✨ fade-in trigger
+        imgEl.onload = () => {
+          imgEl.classList.add("visible");
+        };
+
       } else {
         imgEl.style.display = "none";
         descEl.textContent = "This is a video APOD.";
       }
 
     } catch (error) {
-      console.error("Error fetching APOD:", error);
-
-      titleEl.textContent = "NASA API temporarily unavailable";
-      descEl.textContent = "Try again in a few minutes.";
+      console.error(error);
+      titleEl.textContent = "API unavailable";
+      descEl.textContent = "Try again later.";
       imgEl.style.display = "none";
 
     } finally {
@@ -84,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!favorites.some(item => item.date === data.date)) {
       favorites.push(data);
       localStorage.setItem("favorites", JSON.stringify(favorites));
-      loadFavorites();  // Re-load favorites list after saving
+      loadFavorites();
     }
   }
 
@@ -125,9 +127,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------
   // INIT
   // -------------------------
-  const today = new Date().toISOString().split('T')[0]; // Get today's date as YYYY-MM-DD format
-  datePicker.value = today; // Set date picker to today's date
-  fetchAPOD(today); // Load today's APOD by default
-  loadFavorites(); // Load favorites on page load
+  const today = new Date().toISOString().split('T')[0];
+  datePicker.value = today;
+
+  fetchAPOD(today);
+  loadFavorites();
 
 });
